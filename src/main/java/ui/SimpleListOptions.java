@@ -102,4 +102,8 @@ public class SimpleListOptions  extends JPanel {
         add(addButton);
         setLayout(mainLayout);
     }
+
+    public DefaultListModel getListModel() {
+        return listModel;
+    }
 }

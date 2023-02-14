@@ -2,13 +2,32 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
 
 public class PayloadTab extends JPanel {
+
+    private final JComboBox payloadSetCombobox;
+    private final ArrayList<SimpleListOptions> options;
+    private SimpleListOptions currentOptionsPanel;
+
     public PayloadTab() {
+        options = new ArrayList<SimpleListOptions>();
         JPanel payloadSetPanel = new JPanel();
         BoxLayout payloadSetLayout = new BoxLayout(payloadSetPanel, BoxLayout.X_AXIS);
         JLabel payloadSetLabel = new JLabel("Payload set");
-        JComboBox payloadSetCombobox = new JComboBox(new String[]{});
+        payloadSetCombobox = new JComboBox(new Integer[]{1});
+        payloadSetCombobox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent itemEvent) {
+                Integer item = (Integer) itemEvent.getItem();
+                remove(currentOptionsPanel);
+                currentOptionsPanel = options.get(item-1);
+                add(currentOptionsPanel);
+                repaint();
+            }
+        });
 
         payloadSetPanel.add(payloadSetLabel);
         payloadSetPanel.add(Box.createRigidArea(new Dimension(5,0)));
@@ -29,7 +48,28 @@ public class PayloadTab extends JPanel {
         add(payloadSetPanel);
         add(Box.createRigidArea(new Dimension(0,5)));
         add(payloadTypePanel);
-        add(new SimpleListOptions());
+        currentOptionsPanel = new SimpleListOptions();
+        options.add(currentOptionsPanel);
+        add(currentOptionsPanel);
         setLayout(mainLayout);
+    }
+
+    public void addSet(Integer num) {
+        payloadSetCombobox.addItem(num);
+        options.add(new SimpleListOptions());
+    }
+
+    public int getItemsCount() {
+        return payloadSetCombobox.getItemCount();
+    }
+
+    public ArrayList<DefaultListModel> gatherPayloads() {
+        ArrayList<DefaultListModel> result = new ArrayList<DefaultListModel>();
+
+        for(SimpleListOptions opts : options) {
+            result.add(opts.getListModel());
+        }
+
+        return result;
     }
 }

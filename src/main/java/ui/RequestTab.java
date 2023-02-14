@@ -16,6 +16,10 @@ public class RequestTab extends JPanel {
     private final DefaultHighlighter highlighter;
     private final Highlighter.HighlightPainter painter;
     private final ArrayList<Position> positions;
+    private final JTextArea requestTextArea;
+    private final JButton startButton;
+    private final JButton addPositionButton;
+    private JComboBox attackTypeCombobox;
 
     public RequestTab() {
         positions = new ArrayList<Position>();
@@ -25,8 +29,8 @@ public class RequestTab extends JPanel {
         BoxLayout attackTypeLayout = new BoxLayout(attackTypePanel, BoxLayout.X_AXIS);
 
         JLabel attackLabel = new JLabel("attack type: ");
-        JComboBox attackTypeCombobox = new JComboBox(new String[]{"Sniper", "Cluster bomb", "Pitchfork"});
-        JButton startButton = new JButton("Start");
+        attackTypeCombobox = new JComboBox(new String[]{"Sniper", "Cluster bomb", "Pitchfork"});
+        startButton = new JButton("Start");
 
         attackTypePanel.add(attackLabel);
         attackTypePanel.add(attackTypeCombobox);
@@ -34,10 +38,10 @@ public class RequestTab extends JPanel {
         attackTypePanel.add(startButton);
         attackTypePanel.setLayout(attackTypeLayout);
 
-        JButton addPositionButton = new JButton("Add $");
+        addPositionButton = new JButton("Add $");
         JButton removePositionButton = new JButton("Remove $");
         JButton clearButton = new JButton("Clear $");
-        final JTextArea requestTextArea = new JTextArea();
+        requestTextArea = new JTextArea();
         JPanel requestPanel = new JPanel();
 
         highlighter = (DefaultHighlighter) requestTextArea.getHighlighter();
@@ -88,31 +92,32 @@ public class RequestTab extends JPanel {
             }
         });
 
+        JScrollPane textAreaPane = new JScrollPane(requestTextArea);
+
         SpringLayout springLayout = new SpringLayout();
         springLayout.putConstraint(SpringLayout.NORTH, addPositionButton, 5, SpringLayout.NORTH, requestPanel);
         springLayout.putConstraint(SpringLayout.EAST, addPositionButton, -5, SpringLayout.EAST, requestPanel);
-        springLayout.putConstraint(SpringLayout.WEST, addPositionButton, 5, SpringLayout.EAST, requestTextArea);
+        springLayout.putConstraint(SpringLayout.WEST, addPositionButton, 5, SpringLayout.EAST, textAreaPane);
 
         springLayout.putConstraint(SpringLayout.NORTH, removePositionButton, 5, SpringLayout.SOUTH, addPositionButton);
         springLayout.putConstraint(SpringLayout.EAST, removePositionButton, -5, SpringLayout.EAST, requestPanel);
 
         springLayout.putConstraint(SpringLayout.NORTH, clearButton, 5, SpringLayout.SOUTH, removePositionButton);
         springLayout.putConstraint(SpringLayout.EAST, clearButton, -5, SpringLayout.EAST, requestPanel);
-        springLayout.putConstraint(SpringLayout.WEST, clearButton, 5, SpringLayout.EAST, requestTextArea);
+        springLayout.putConstraint(SpringLayout.WEST, clearButton, 5, SpringLayout.EAST, textAreaPane);
 
-        springLayout.putConstraint(SpringLayout.NORTH, requestTextArea, 5, SpringLayout.NORTH, requestPanel);
-        springLayout.putConstraint(SpringLayout.WEST, requestTextArea, 0, SpringLayout.WEST, requestPanel);
-        springLayout.putConstraint(SpringLayout.SOUTH, requestTextArea, 0, SpringLayout.SOUTH, requestPanel);
-        springLayout.putConstraint(SpringLayout.EAST, requestTextArea, -5, SpringLayout.WEST, addPositionButton);
-        springLayout.putConstraint(SpringLayout.EAST, requestTextArea, -5, SpringLayout.WEST, removePositionButton);
+        springLayout.putConstraint(SpringLayout.NORTH, textAreaPane, 5, SpringLayout.NORTH, requestPanel);
+        springLayout.putConstraint(SpringLayout.WEST, textAreaPane, 0, SpringLayout.WEST, requestPanel);
+        springLayout.putConstraint(SpringLayout.SOUTH, textAreaPane, 0, SpringLayout.SOUTH, requestPanel);
+        springLayout.putConstraint(SpringLayout.EAST, textAreaPane, -5, SpringLayout.WEST, addPositionButton);
+        springLayout.putConstraint(SpringLayout.EAST, textAreaPane, -5, SpringLayout.WEST, removePositionButton);
 
 
-        requestPanel.add(requestTextArea);
+        requestPanel.add(textAreaPane);
         requestPanel.add(addPositionButton);
         requestPanel.add(clearButton);
         requestPanel.add(removePositionButton);
         requestPanel.setLayout(springLayout);
-
 
         this.add(attackTypePanel);
         this.add(requestPanel);
@@ -127,5 +132,25 @@ public class RequestTab extends JPanel {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<Position> getPositions() {
+        return positions;
+    }
+
+    public String getRequestString() {
+        return requestTextArea.getText();
+    }
+
+    public void addStartButtonActionListener(ActionListener listener) {
+        startButton.addActionListener(listener);
+    }
+
+    public void addAddButtonActionListener(ActionListener listener) {
+        addPositionButton.addActionListener(listener);
+    }
+
+    public String getAttackType() {
+        return (String) attackTypeCombobox.getSelectedItem();
     }
 }

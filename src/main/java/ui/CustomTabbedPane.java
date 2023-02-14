@@ -8,20 +8,20 @@ import java.util.ArrayList;
 public class CustomTabbedPane extends JTabbedPane implements ChangeListener {
 
     private int tabCount = 1;
-    private final ArrayList<RequestTab> tabs;
+    private final ArrayList<AllTabsPanel> tabs;
 
     CustomTabbedPane() {
         super(JTabbedPane.TOP);
-        tabs = new ArrayList<RequestTab>();
+        tabs = new ArrayList<AllTabsPanel>();
         this.setTabPlacement(JTabbedPane.TOP);
-        tabs.add(new RequestTab());
+        tabs.add(new AllTabsPanel());
         this.addTab("1", tabs.get(0));
         this.setTabComponentAt(0, new TabComponent("1", this));
         this.addTab("+", null);
         this.addChangeListener(this);
     }
 
-    public ArrayList<RequestTab> getTabs() {
+    public ArrayList<AllTabsPanel> getTabs() {
         return this.tabs;
     }
 
@@ -36,7 +36,7 @@ public class CustomTabbedPane extends JTabbedPane implements ChangeListener {
 
     private void customAddTab(int selectedIndex) {
         this.tabCount++;
-        this.tabs.add(new RequestTab());
+        this.tabs.add(new AllTabsPanel());
         this.setTitleAt(selectedIndex, Integer.toString(this.tabCount));
         this.setTabComponentAt(selectedIndex, new TabComponent(Integer.toString(this.tabCount), this));
         this.setComponentAt(selectedIndex, this.tabs.get(this.tabs.size()-1));
