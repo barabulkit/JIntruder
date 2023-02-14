@@ -1,18 +1,73 @@
 package ui;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class SimpleListOptions  extends JPanel {
+
+    private final DefaultListModel listModel;
+    private final JFileChooser fileChooser;
 
     public SimpleListOptions() {
         SpringLayout mainLayout = new SpringLayout();
 
-        JList itemList = new JList();
+        listModel = new DefaultListModel();
+        fileChooser = new JFileChooser();
+
+        final JList itemList = new JList();
         JButton loadButton = new JButton("Load");
         JButton removeButton = new JButton("Remove");
         JButton clearButton = new JButton("Clear");
         JButton addButton = new JButton("Add");
-        JTextField itemTextField = new JTextField();
+        final JTextField itemTextField = new JTextField();
+
+        itemList.setModel(listModel);
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String text = itemTextField.getText();
+                if(text.isEmpty()) return;
+
+                listModel.addElement(text);
+                itemTextField.setText("");
+            }
+        });
+
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                listModel.remove(itemList.getSelectedIndex());
+            }
+        });
+
+        clearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                listModel.clear();
+            }
+        });
+
+        loadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                int res = fileChooser.showOpenDialog(SimpleListOptions.this);
+                if(res == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    try {
+                        Scanner scanner = new Scanner(file);
+                        while(scanner.hasNextLine()) {
+                            listModel.addElement(scanner.nextLine());
+                        }
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
 
         mainLayout.putConstraint(SpringLayout.EAST, itemList, -5, SpringLayout.EAST, this);
         mainLayout.putConstraint(SpringLayout.NORTH, itemList, 5, SpringLayout.NORTH, this);
@@ -31,7 +86,6 @@ public class SimpleListOptions  extends JPanel {
         mainLayout.putConstraint(SpringLayout.WEST, clearButton, 5, SpringLayout.WEST, this);
         mainLayout.putConstraint(SpringLayout.EAST, clearButton, -5, SpringLayout.WEST, itemList);
 
-        //mainLayout.putConstraint(SpringLayout.NORTH, itemTextField, 5, SpringLayout.SOUTH, itemList);
         mainLayout.putConstraint(SpringLayout.SOUTH, itemTextField, -5, SpringLayout.SOUTH, this);
         mainLayout.putConstraint(SpringLayout.EAST, itemTextField, -5, SpringLayout.EAST, this);
         mainLayout.putConstraint(SpringLayout.WEST, itemTextField, 5, SpringLayout.EAST, addButton);
