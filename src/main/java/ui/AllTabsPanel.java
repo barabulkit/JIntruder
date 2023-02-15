@@ -25,7 +25,7 @@ public class AllTabsPanel extends JTabbedPane {
                 ArrayList<DefaultListModel> options  = payloadTab.gatherPayloads();
 
                 AttackPerformer attackPerformer = new AttackPerformer(request, positions, attackType, options);
-                attackPerformer.performSniperAttack();
+                attackPerformer.performClusterBombAttack();
             }
         });
 
