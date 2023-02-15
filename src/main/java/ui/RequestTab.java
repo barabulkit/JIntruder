@@ -57,7 +57,9 @@ public class RequestTab extends JPanel {
                 String text = new StringBuffer(requestTextArea.getText()).insert(startIndex, '$')
                         .insert(endIndex+1, '$').toString();
                 calculatePositions(text);
+                int tmp = requestTextArea.getCaretPosition();
                 requestTextArea.setText(text);
+                requestTextArea.setCaretPosition(tmp);
 
                 highlight();
             }
@@ -72,7 +74,9 @@ public class RequestTab extends JPanel {
                 StringBuilder editor = new StringBuilder(requestTextArea.getText());
                 editor.replace(startIndex, startIndex+1, "");
                 editor.replace(endIndex-2, endIndex-1, "");
+                int tmp = requestTextArea.getCaretPosition();
                 requestTextArea.setText(editor.toString());
+                requestTextArea.setCaretPosition(tmp);
 
                 calculatePositions(editor.toString());
                 highlight();
@@ -83,7 +87,9 @@ public class RequestTab extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 highlighter.removeAllHighlights();
+                int tmp = requestTextArea.getCaretPosition();
                 requestTextArea.setText(requestTextArea.getText().replaceAll("\\$", ""));
+                requestTextArea.setCaretPosition(tmp);
                 positions.clear();
             }
         });
