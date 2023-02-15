@@ -42,4 +42,30 @@ public class AttackPerformer {
 
         return results;
     }
+
+    public ArrayList<String> performClusterBombAttack() {
+        ArrayList<String> result = new ArrayList<String>();
+
+        if(options.size() < positions.size()) return result;
+        ArrayList<String> list = new ArrayList<String>();
+        list.add(request);
+        for(int i = 0; i < positions.size(); i++) {
+            list = fillPosition(list, positions.get(i), options.get(i));
+        }
+
+        System.out.println(list.size());
+        return result;
+    }
+
+    public ArrayList<String> fillPosition(ArrayList<String> requests, Position position, DefaultListModel options) {
+        ArrayList<String> result = new ArrayList<String>();
+        for(String request : requests) {
+            for(int i = 0; i < options.size(); i++) {
+                StringBuffer buffer = new StringBuffer(request);
+                buffer.replace(position.getStartIndex(), position.getEndIndex(), (String) options.getElementAt(i));
+                result.add(buffer.toString());
+            }
+        }
+        return result;
+    }
 }
