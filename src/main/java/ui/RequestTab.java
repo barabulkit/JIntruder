@@ -56,9 +56,8 @@ public class RequestTab extends JPanel {
 
                 String text = new StringBuffer(requestTextArea.getText()).insert(startIndex, '$')
                         .insert(endIndex+1, '$').toString();
+                calculatePositions(text);
                 requestTextArea.setText(text);
-
-                positions.add(new Position(startIndex, endIndex+2));
 
                 highlight();
             }
@@ -70,17 +69,13 @@ public class RequestTab extends JPanel {
                 int startIndex = requestTextArea.getSelectionStart();
                 int endIndex = requestTextArea.getSelectionEnd();
 
-                for(Highlighter.Highlight x : highlighter.getHighlights()) {
-                    if(x.getStartOffset() == startIndex && x.getEndOffset() == endIndex) {
-                        highlighter.removeHighlight(x);
-                    }
-                }
+                StringBuilder editor = new StringBuilder(requestTextArea.getText());
+                editor.replace(startIndex, startIndex+1, "");
+                editor.replace(endIndex-2, endIndex-1, "");
+                requestTextArea.setText(editor.toString());
 
-                for(Position x : positions) {
-                    if(x.getStartIndex() == startIndex && x.getEndIndex() == endIndex) {
-                        positions.remove(x);
-                    }
-                }
+                calculatePositions(editor.toString());
+                highlight();
             }
         });
 
@@ -88,6 +83,7 @@ public class RequestTab extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 highlighter.removeAllHighlights();
+                requestTextArea.setText(requestTextArea.getText().replaceAll("\\$", ""));
                 positions.clear();
             }
         });
@@ -136,6 +132,22 @@ public class RequestTab extends JPanel {
 
     public ArrayList<Position> getPositions() {
         return positions;
+    }
+
+    private void calculatePositions(String text) {
+        positions.clear();
+        int offset = 0;
+        ArrayList<Integer> indexes = new ArrayList<Integer>();
+        while(text.indexOf('$') > 0) {
+            indexes.add(text.indexOf('$') + offset);
+            int adder = text.indexOf('$')+1;
+            text = text.substring(text.indexOf('$')+1);
+            offset += adder;
+        }
+        if(indexes.size() % 2 != 0) return;
+        for(int i = 0; i < indexes.size(); i += 2) {
+            positions.add(new Position(indexes.get(i), indexes.get(i+1)+1));
+        }
     }
 
     public String getRequestString() {
