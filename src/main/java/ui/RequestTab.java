@@ -138,7 +138,7 @@ public class RequestTab extends JPanel {
         positions.clear();
         int offset = 0;
         ArrayList<Integer> indexes = new ArrayList<Integer>();
-        while(text.indexOf('$') > 0) {
+        while(text.indexOf('$') >= 0) {
             indexes.add(text.indexOf('$') + offset);
             int adder = text.indexOf('$')+1;
             text = text.substring(text.indexOf('$')+1);
