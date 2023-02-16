@@ -82,26 +82,10 @@ public class AttackPerformer {
         }
     }
 
-    public Future<String> doRequest(String target, String request) {
-        return executor.submit(() -> {
-            Socket clientSocket = new Socket(target, 80);
-            PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
-            Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
-
-            writer.println(request);
-            String result = "";
-            while(in.hasNextLine()) {
-                result = result + in.nextLine();
-            }
-
-            return result;
-        });
-    }
-
     public void performAttack() {
         if(attackType.equals("Sniper")) {
             performSniperAttack();
-        } else if(attackType.equals("Cluster Bomb")) {
+        } else if(attackType.equals("Cluster bomb")) {
             performClusterBombAttack();
         }
     }

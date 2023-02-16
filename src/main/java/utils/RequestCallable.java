@@ -1,9 +1,18 @@
 package utils;
 
+import rawhttp.core.RawHttp;
+import rawhttp.core.RawHttpRequest;
+import rawhttp.core.RawHttpResponse;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.util.Scanner;
 import java.util.concurrent.Callable;
+import java.util.zip.GZIPInputStream;
 
 public class RequestCallable implements Callable<String> {
 
@@ -19,33 +28,47 @@ public class RequestCallable implements Callable<String> {
 
     @Override
     public String call() {
-        Socket clientSocket = null;
+        //Socket clientSocket = null;
+        SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+
         try {
-            clientSocket = new Socket(InetAddress.getByName(target), 80);
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+            SSLSocket socket = (SSLSocket) factory.createSocket(InetAddress.getByName(target), 443);
+            socket.startHandshake();
 
-            String[] lines = request.split("\r\n");
-            for(String line : lines) {
-                writer.write(line + "\r\n");
+            InputStream input = socket.getInputStream();
+
+            RawHttp rawHttp = new RawHttp();
+
+            RawHttpRequest httpRequest = rawHttp.parseRequest(request);
+
+            httpRequest.writeTo(socket.getOutputStream());
+
+            RawHttpResponse<?> response = rawHttp.parseResponse(socket.getInputStream());
+
+            InputStream is = response.eagerly().getBody().get().asRawStream();
+            Scanner scanner;
+            byte[] bytes = is.readAllBytes();
+            if(isCompressed(bytes)) {
+                GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(bytes));
+                scanner = new Scanner(gis);
+            } else {
+                scanner = new Scanner(new ByteArrayInputStream(bytes));
             }
-            writer.write("\r\n");
-            writer.flush();
-
-            InputStream input = clientSocket.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-
-            StringBuilder result = new StringBuilder();
-            String line;
-            while((line = reader.readLine()) != null) {
-                result.append(line);
+            StringBuilder res = new StringBuilder();
+            while(scanner.hasNextLine()) {
+                res.append(scanner.nextLine());
             }
-
-            callback.setResponse(result.toString());
+            callback.setResponse(res.toString());
             callback.callbackMethod();
-            return result.toString();
+            return "";
+            //return result.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return "no response";
+    }
+
+    private boolean isCompressed(final byte[] compressed) {
+        return (compressed[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (compressed[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8));
     }
 }
