@@ -11,10 +11,13 @@ import java.util.ArrayList;
 public class AllTabsPanel extends JTabbedPane {
     private final RequestTab requestTab;
     private final PayloadTab payloadTab;
+    private final ResultTab resultTab;
 
     public AllTabsPanel() {
         requestTab = new RequestTab();
         payloadTab = new PayloadTab();
+        resultTab = new ResultTab();
+        resultTab.configureTable();
 
         requestTab.addStartButtonActionListener(new ActionListener() {
             @Override
@@ -25,8 +28,8 @@ public class AllTabsPanel extends JTabbedPane {
                 String target = requestTab.getTarget();
                 ArrayList<DefaultListModel> options  = payloadTab.gatherPayloads();
 
-                AttackPerformer attackPerformer = new AttackPerformer(target, request, positions, attackType, options);
-                attackPerformer.performSniperAttack();
+                AttackPerformer attackPerformer = new AttackPerformer(target, request, positions, attackType, options, resultTab.getTableModel());
+                attackPerformer.performAttack();
             }
         });
 
@@ -41,9 +44,6 @@ public class AllTabsPanel extends JTabbedPane {
 
         addTab("Positions", requestTab);
         addTab("Payloads", payloadTab);
-    }
-
-    public void performAttack() {
-
+        addTab("Results", resultTab);
     }
 }
