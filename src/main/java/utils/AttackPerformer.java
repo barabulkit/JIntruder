@@ -1,20 +1,28 @@
 package utils;
 
 import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class AttackPerformer {
 
+    private final String target;
     private final String request;
     private final ArrayList<Position> positions;
     private final String attackType;
     private final ArrayList<DefaultListModel> options;
     private final ExecutorService executor;
 
-    public AttackPerformer(String request, ArrayList<Position> positions, String attackType,
+    public AttackPerformer(String target, String request, ArrayList<Position> positions, String attackType,
                            ArrayList<DefaultListModel> options) {
+        this.target = target;
         this.request = request;
         this.positions = positions;
         this.attackType = attackType;
@@ -37,7 +45,11 @@ public class AttackPerformer {
                 requestEditor.insert(pos.getStartIndex() + offset, payload);
                 offset = offset - length + payload.length();
             }
-            System.out.println(requestEditor.toString());
+            RequestCallback requestCallback = new RequestCallback();
+            RequestCallable requestCallable = new RequestCallable(target, requestEditor.toString(), requestCallback);
+            executor.submit(requestCallable);
+            //doRequest("", requestEditor.toString());
+            //System.out.println(requestEditor.toString());
         }
 
         return results;
@@ -65,5 +77,21 @@ public class AttackPerformer {
                 System.out.println(editor.toString());
             }
         }
+    }
+
+    public Future<String> doRequest(String target, String request) {
+        return executor.submit(() -> {
+            Socket clientSocket = new Socket(target, 80);
+            PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
+            Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
+
+            writer.println(request);
+            String result = "";
+            while(in.hasNextLine()) {
+                result = result + in.nextLine();
+            }
+
+            return result;
+        });
     }
 }

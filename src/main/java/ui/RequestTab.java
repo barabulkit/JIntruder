@@ -19,7 +19,8 @@ public class RequestTab extends JPanel {
     private final JTextArea requestTextArea;
     private final JButton startButton;
     private final JButton addPositionButton;
-    private JComboBox attackTypeCombobox;
+    private final JComboBox attackTypeCombobox;
+    private final JTextField targetTextField;
 
     public RequestTab() {
         positions = new ArrayList<Position>();
@@ -32,11 +33,25 @@ public class RequestTab extends JPanel {
         attackTypeCombobox = new JComboBox(new String[]{"Sniper", "Cluster bomb", "Pitchfork"});
         startButton = new JButton("Start");
 
+        attackTypePanel.add(Box.createRigidArea(new Dimension(5, 0)));
         attackTypePanel.add(attackLabel);
         attackTypePanel.add(attackTypeCombobox);
-        attackTypePanel.add(Box.createRigidArea(new Dimension(10,0)));
+        attackTypePanel.add(Box.createRigidArea(new Dimension(5,0)));
         attackTypePanel.add(startButton);
+        attackTypePanel.add(Box.createRigidArea(new Dimension(5,0)));
         attackTypePanel.setLayout(attackTypeLayout);
+
+        JPanel targetPanel = new JPanel();
+        BoxLayout targetLayout = new BoxLayout(targetPanel, BoxLayout.X_AXIS);
+        JLabel targetLabel = new JLabel("target: ");
+        targetTextField = new JTextField();
+
+        targetPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        targetPanel.add(targetLabel);
+        targetPanel.add(targetTextField);
+        targetPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        targetPanel.setLayout(targetLayout);
+        targetPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
 
         addPositionButton = new JButton("Add $");
         JButton removePositionButton = new JButton("Remove $");
@@ -121,7 +136,10 @@ public class RequestTab extends JPanel {
         requestPanel.add(removePositionButton);
         requestPanel.setLayout(springLayout);
 
+        this.add(Box.createRigidArea(new Dimension(0, 5)));
         this.add(attackTypePanel);
+        this.add(Box.createRigidArea(new Dimension(0, 5)));
+        this.add(targetPanel);
         this.add(requestPanel);
         this.setLayout(mainLayout);
     }
@@ -170,5 +188,9 @@ public class RequestTab extends JPanel {
 
     public String getAttackType() {
         return (String) attackTypeCombobox.getSelectedItem();
+    }
+
+    public String getTarget() {
+        return targetTextField.getText();
     }
 }

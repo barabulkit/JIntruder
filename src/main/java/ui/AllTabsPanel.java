@@ -22,10 +22,11 @@ public class AllTabsPanel extends JTabbedPane {
                 String request = requestTab.getRequestString();
                 ArrayList<Position> positions = requestTab.getPositions();
                 String attackType = requestTab.getAttackType();
+                String target = requestTab.getTarget();
                 ArrayList<DefaultListModel> options  = payloadTab.gatherPayloads();
 
-                AttackPerformer attackPerformer = new AttackPerformer(request, positions, attackType, options);
-                attackPerformer.performClusterBombAttack();
+                AttackPerformer attackPerformer = new AttackPerformer(target, request, positions, attackType, options);
+                attackPerformer.performSniperAttack();
             }
         });
 
