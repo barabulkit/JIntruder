@@ -24,6 +24,7 @@ public class SimpleListOptions  extends JPanel {
         JButton clearButton = new JButton("Clear");
         JButton addButton = new JButton("Add");
         final JTextField itemTextField = new JTextField();
+        JScrollPane itemListPanel = new JScrollPane(itemList);
 
         itemList.setModel(listModel);
         addButton.addActionListener(new ActionListener() {
@@ -69,32 +70,32 @@ public class SimpleListOptions  extends JPanel {
             }
         });
 
-        mainLayout.putConstraint(SpringLayout.EAST, itemList, -5, SpringLayout.EAST, this);
-        mainLayout.putConstraint(SpringLayout.NORTH, itemList, 5, SpringLayout.NORTH, this);
-        mainLayout.putConstraint(SpringLayout.SOUTH, itemList, 5, SpringLayout.SOUTH, this);
-        mainLayout.putConstraint(SpringLayout.WEST, itemList, 5, SpringLayout.EAST, removeButton);
-        mainLayout.putConstraint(SpringLayout.SOUTH, itemList, -5, SpringLayout.NORTH, itemTextField);
+        mainLayout.putConstraint(SpringLayout.EAST, itemListPanel, -5, SpringLayout.EAST, this);
+        mainLayout.putConstraint(SpringLayout.NORTH, itemListPanel, 5, SpringLayout.NORTH, this);
+        mainLayout.putConstraint(SpringLayout.SOUTH, itemListPanel, 5, SpringLayout.SOUTH, this);
+        mainLayout.putConstraint(SpringLayout.WEST, itemListPanel, 5, SpringLayout.EAST, removeButton);
+        mainLayout.putConstraint(SpringLayout.SOUTH, itemListPanel, -5, SpringLayout.NORTH, itemTextField);
 
         mainLayout.putConstraint(SpringLayout.NORTH, loadButton, 5, SpringLayout.NORTH, this);
         mainLayout.putConstraint(SpringLayout.WEST, loadButton, 5, SpringLayout.WEST, this);
-        mainLayout.putConstraint(SpringLayout.EAST, loadButton, -5, SpringLayout.WEST, itemList);
+        mainLayout.putConstraint(SpringLayout.EAST, loadButton, -5, SpringLayout.WEST, itemListPanel);
 
         mainLayout.putConstraint(SpringLayout.NORTH, removeButton, 5, SpringLayout.SOUTH, loadButton);
         mainLayout.putConstraint(SpringLayout.WEST, removeButton, 5, SpringLayout.WEST, this);
 
         mainLayout.putConstraint(SpringLayout.NORTH, clearButton, 5, SpringLayout.SOUTH, removeButton);
         mainLayout.putConstraint(SpringLayout.WEST, clearButton, 5, SpringLayout.WEST, this);
-        mainLayout.putConstraint(SpringLayout.EAST, clearButton, -5, SpringLayout.WEST, itemList);
+        mainLayout.putConstraint(SpringLayout.EAST, clearButton, -5, SpringLayout.WEST, itemListPanel);
 
         mainLayout.putConstraint(SpringLayout.SOUTH, itemTextField, -5, SpringLayout.SOUTH, this);
         mainLayout.putConstraint(SpringLayout.EAST, itemTextField, -5, SpringLayout.EAST, this);
         mainLayout.putConstraint(SpringLayout.WEST, itemTextField, 5, SpringLayout.EAST, addButton);
 
         mainLayout.putConstraint(SpringLayout.WEST, addButton, 5, SpringLayout.WEST, this);
-        mainLayout.putConstraint(SpringLayout.EAST, addButton, -5, SpringLayout.WEST, itemList);
+        mainLayout.putConstraint(SpringLayout.EAST, addButton, -5, SpringLayout.WEST, itemListPanel);
         mainLayout.putConstraint(SpringLayout.SOUTH, addButton, -5, SpringLayout.SOUTH, this);
 
-        add(itemList);
+        add(itemListPanel);
         add(loadButton);
         add(removeButton);
         add(clearButton);

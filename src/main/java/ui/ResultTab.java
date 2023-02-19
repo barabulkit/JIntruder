@@ -1,5 +1,8 @@
 package ui;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseEvent;
@@ -14,13 +17,16 @@ public class ResultTab extends JPanel {
         tableModel = new DefaultTableModel();
         JTable table = new JTable(tableModel);
         JTextArea responseTextArea = new JTextArea();
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(table),
+                new JScrollPane(responseTextArea));
 
        table.addMouseListener(new MouseListener() {
            @Override
            public void mouseClicked(MouseEvent mouseEvent) {
                int index = table.getSelectedRow();
-               String response = (String) tableModel.getValueAt(index, 2);
-               responseTextArea.setText(response);
+               String response = (String) tableModel.getValueAt(index, tableModel.getColumnCount()-1);
+               Document doc = Jsoup.parse(response);
+               responseTextArea.setText(doc.toString());
            }
 
            @Override
@@ -44,13 +50,17 @@ public class ResultTab extends JPanel {
            }
        });
 
-        add(new JScrollPane(table));
-        add(new JScrollPane(responseTextArea));
+        add(splitPane);
         setLayout(mainLayout);
     }
 
-    public void configureTable() {
+    public void configureTable(Integer itemCount) {
+        tableModel.setColumnCount(0);
         tableModel.addColumn("Request");
+
+        for(int i = 0; i < itemCount; i++) {
+            tableModel.addColumn(Integer.toString(i+1));
+        }
         tableModel.addColumn("Response length");
         tableModel.addColumn("Response");
     }

@@ -17,11 +17,12 @@ public class AllTabsPanel extends JTabbedPane {
         requestTab = new RequestTab();
         payloadTab = new PayloadTab();
         resultTab = new ResultTab();
-        resultTab.configureTable();
+        resultTab.configureTable(payloadTab.getItemsCount());
 
         requestTab.addStartButtonActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                resultTab.configureTable(payloadTab.getItemsCount());
                 String request = requestTab.getRequestString();
                 ArrayList<Position> positions = requestTab.getPositions();
                 String attackType = requestTab.getAttackType();
