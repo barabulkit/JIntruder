@@ -68,7 +68,7 @@ public class AttackPerformer {
         Position position = positions.get(positionNum);
         for(int i = 0; i < options.get(positionNum).size(); i++) {
             Request dup = request.duplicate();
-            StringBuilder editor = new StringBuilder(this.request);
+            StringBuilder editor = new StringBuilder(dup.getRequest());
             String replacer = (String) options.get(positionNum).getElementAt(i);
             int newOffset = offset - (position.getEndIndex() - position.getStartIndex()) + replacer.length();
             editor.replace(position.getStartIndex()+offset, position.getEndIndex()+offset, replacer);

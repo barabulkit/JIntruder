@@ -43,9 +43,7 @@ public class RequestCallable implements Callable<String> {
 
             InputStream is = response.eagerly().getBody().get().asRawStream();
             Scanner scanner;
-            System.out.println(httpRequest.getHeaders().getHeaderNames());
             if(httpRequest.getHeaders().get("Accept-Encoding", ",").contains("gzip")) {
-                System.out.println("gzip");
                 GZIPInputStream gis = new GZIPInputStream(is);
                 scanner = new Scanner(gis);
             } else {
