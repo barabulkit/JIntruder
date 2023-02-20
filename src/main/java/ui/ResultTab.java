@@ -16,6 +16,7 @@ public class ResultTab extends JPanel {
         BoxLayout mainLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         tableModel = new DefaultTableModel();
         JTable table = new JTable(tableModel);
+        table.setAutoCreateRowSorter(true);
         JTextArea responseTextArea = new JTextArea();
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(table),
                 new JScrollPane(responseTextArea));
